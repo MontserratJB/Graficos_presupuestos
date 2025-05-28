@@ -1,32 +1,36 @@
+
 import pandas as pd
 import plotly.express as px
 
 def generar_grafico():
-    # Cargar los datos desde el CSV
-    df = pd.read_csv("datos_presupuesto.csv")
+    # Cargar los datos desde el CSV con codificación 'latin1' y separador ';'
+    df = pd.read_csv("datos_presupuesto.csv", encoding='latin1', sep=';')
 
-    # Asegurar que los valores sean numéricos
-    df['Presupuesto'] = pd.to_numeric(df['Presupuesto'], errors='coerce')
-    df['Ejecutado'] = pd.to_numeric(df['Ejecutado'], errors='coerce')
+    # Asegurar que los valores sean numéricos
+    df['TOTAL GENERAL'] = pd.to_numeric(df['TOTAL GENERAL'], errors='coerce')
 
-    # Calcular el porcentaje de ejecución
-    df['% Ejecución'] = (df['Ejecutado'] / df['Presupuesto']) * 100
+    # Crear gráfico de barras apiladas con Plotly
+    fig = px.bar(
+        df,
+        x='CATEGORIA',
+        y='TOTAL GENERAL',
+        color='SUBCATEGORIA',
+        labels={'TOTAL GENERAL': 'Monto Total (₡)', 'CATEGORIA': 'Categoría', 'SUBCATEGORIA': 'Subcategoría'},
+        title='Comparativo de Presupuesto por Categoría y Subcategoría'
+    )
 
-    # Crear gráfico de barras con Plotly
-    fig = px.bar(
-        df,
-        x='Programa',
-        y=['Presupuesto', 'Ejecutado'],
-        barmode='group',
-        labels={'value': 'Colones', 'variable': 'Categoría'},
-        title='Comparativo de Presupuesto y Ejecución por Programa'
-    )
+    fig.update_layout(
+        xaxis_title="Categoría",
+        yaxis_title="Monto Total (₡)",
+        legend_title="Subcategoría",
+        template="plotly_white"
+    )
 
-    fig.update_layout(
-        xaxis_title="Programa",
-        yaxis_title="Monto (₡)",
-        legend_title="",
-        template="plotly_white"
-    )
+    return fig
 
-    return fig
+# Generar el gráfico
+figura = generar_grafico()
+
+# Mostrar el gráfico
+figura.show()
+
