@@ -1,12 +1,13 @@
-import dash
-from dash import html
+from dash import Dash, html, dcc
+from graficos import generar_grafico
 
-# Crear la app Dash
-app = dash.Dash(__name__)
+app = Dash(__name__)
+figura = generar_grafico()
 
-# Layout simple para prueba
-app.layout = html.Div("Hola desde Dash")
+app.layout = html.Div([
+    html.H1("Presupuesto Municipal 2023"),
+    dcc.Graph(figure=figura)
+])
 
-# Este bloque permite correr localmente
 if __name__ == "__main__":
     app.run_server(debug=True)
